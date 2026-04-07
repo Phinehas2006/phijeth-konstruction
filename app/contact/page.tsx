@@ -29,21 +29,43 @@ export default function ContactPage() {
   })
   const [submitted, setSubmitted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState('')
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setSubmitError('')
+    setSubmitted(false)
     setIsSubmitting(true)
-    window.setTimeout(() => {
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const data = (await response.json()) as { error?: string }
+
+      if (!response.ok) {
+        setSubmitError(data.error || 'Something went wrong. Please try again.')
+        return
+      }
+
       setSubmitted(true)
-      setIsSubmitting(false)
       setFormData({ name: '', email: '', message: '' })
       window.setTimeout(() => setSubmitted(false), 5000)
-    }, 1200)
+    } catch {
+      setSubmitError('We could not send your message right now. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -63,12 +85,18 @@ export default function ContactPage() {
             <SectionHeading
               eyebrow="Contact Form"
               title="Send a message"
-              description="This form is ready for backend integration. For now it provides a polished front-end experience."
+              description="Send your project details here and the message will be delivered to our email inbox."
             />
 
             {submitted && (
               <div className="mt-6 rounded-[1.25rem] border border-[#CDE7D5] bg-[#EDF9F1] p-4 text-sm text-[#1F6B38]">
-                Your message has been captured in this demo form and the fields have been reset.
+                Your message has been sent successfully. We will check our email and get back to you.
+              </div>
+            )}
+
+            {submitError && (
+              <div className="mt-6 rounded-[1.25rem] border border-[#F2CACA] bg-[#FFF1F1] p-4 text-sm text-[#A33A3A]">
+                {submitError}
               </div>
             )}
 
