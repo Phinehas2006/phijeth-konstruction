@@ -6,23 +6,10 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'PHIJETH KONSTRUCTION - Civil Engineering and Construction',
-  description: 'PHIJETH KONSTRUCTION provides building construction, road construction, structural design, and project management with professional civil engineering standards.',
+  description: 'PHIJETH KONSTRUCTION provides building construction, road construction, structural design, and project management with professional civil engineering standards and Experts who are Ready to serve and Deliver with speed and Top notched quality.',
   icons: {
-    icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-    ],
-    apple: '/apple-icon.png',
+    icon: '/images/LOGO.png',
+    apple: '/images/LOGO.png',
   },
 }
 

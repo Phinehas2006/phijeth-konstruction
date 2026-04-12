@@ -9,7 +9,6 @@ import { companyInfo, siteImages } from '@/lib/data'
 export function HomeHero() {
   const slides = siteImages.heroSlides ?? [siteImages.hero]
   const [activeSlide, setActiveSlide] = useState(0)
-  const [rippleKey, setRippleKey] = useState(0)
   const reduceMotion = useReducedMotion()
   const headlineWords = useMemo(
     () => 'Building reliable civil engineering solutions for modern infrastructure.'.split(' '),
@@ -116,30 +115,6 @@ export function HomeHero() {
             }}
             className="mt-10 flex flex-col gap-4 sm:flex-row"
           >
-            <motion.div whileHover={{ y: -3, scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-              <Link
-              href="/contact"
-              onClick={() => setRippleKey((current) => current + 1)}
-              className="relative inline-flex w-full items-center justify-center overflow-hidden rounded-full bg-accent px-7 py-3.5 text-sm font-semibold text-accent-foreground transition-all duration-500 hover:bg-[#E66E00] hover:shadow-[0_0_32px_rgba(255,122,0,0.45)] sm:w-auto"
-              >
-                <AnimatePresence>
-                  <motion.span
-                    key={rippleKey}
-                    initial={{ scale: 0, opacity: 0.35 }}
-                    animate={{ scale: 3.4, opacity: 0 }}
-                    transition={{ duration: 0.7, ease: 'easeOut' }}
-                    className="absolute inset-0 m-auto h-12 w-12 rounded-full bg-white/45"
-                  />
-                </AnimatePresence>
-                <motion.span
-                  animate={reduceMotion ? undefined : { y: [0, -3, 0] }}
-                  transition={{ duration: 1.8, repeat: Infinity, repeatDelay: 2.4 }}
-                  className="relative z-10"
-                >
-                  Request a Quote
-                </motion.span>
-              </Link>
-            </motion.div>
             <motion.div whileHover={{ y: -3, scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Link
               href="/projects"
