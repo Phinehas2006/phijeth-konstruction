@@ -1,13 +1,22 @@
 import os
 from pathlib import Path
-import dj_database_url
 from dotenv import load_dotenv
+
+try:
+    import dj_database_url
+except ImportError:
+    dj_database_url = None
+try:
+    import whitenoise
+except ImportError:
+    whitenoise = None
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / '.env')
 
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'replace-this-with-secure-key')
-DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
+render_host = os.getenv('RENDER_EXTERNAL_HOSTNAME')
+DEBUG = os.getenv('DJANGO_DEBUG', 'False' if render_host else 'True') == 'True'
 
 ALLOWED_HOSTS = [
     host.strip()
@@ -17,7 +26,6 @@ ALLOWED_HOSTS = [
     ).split(',')
     if host.strip()
 ]
-render_host = os.getenv('RENDER_EXTERNAL_HOSTNAME')
 if render_host and render_host not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append(render_host)
 
@@ -36,7 +44,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -65,12 +72,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'phijeth_cms.wsgi.application'
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-        conn_max_age=600,
-    )
-}
+if dj_database_url:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+            conn_max_age=600,
+        )
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -99,9 +114,13 @@ STORAGES = {
         'BACKEND': 'django.core.files.storage.FileSystemStorage',
     },
     'staticfiles': {
-        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+        'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage',
     },
 }
+if whitenoise:
+    STORAGES['staticfiles'] = {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    }
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -112,6 +131,8 @@ CORS_ALLOW_ALL_ORIGINS = os.getenv('DJANGO_CORS_ALLOW_ALL_ORIGINS', 'False') == 
 CORS_ALLOWED_ORIGINS = [
     origin.strip() for origin in os.getenv('DJANGO_ALLOWED_ORIGINS', 'http://localhost:3000').split(',') if origin.strip()
 ]
+if whitenoise:
+    MIDDLEWARE.insert(2, 'whitenoise.middleware.WhiteNoiseMiddleware')
 CSRF_TRUSTED_ORIGINS = [
     origin.strip() for origin in os.getenv('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',') if origin.strip()
 ]
