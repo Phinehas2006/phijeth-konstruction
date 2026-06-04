@@ -8,6 +8,7 @@ from .models import (
     TeamMember,
     BlogPost,
     ContactMessage,
+    SiteSettings,
 )
 
 
@@ -28,6 +29,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     videos = ProjectVideoSerializer(many=True, read_only=True)
     category = serializers.CharField(source='project_type')
     image = serializers.ImageField(source='main_image', allow_null=True)
+    tags = serializers.SerializerMethodField()
 
     class Meta:
         model = Project
@@ -54,17 +56,10 @@ class ProjectSerializer(serializers.ModelSerializer):
             'updated_at',
         ]
 
-    def validate_images(self, value):
-        """Limit to 10 images per project"""
-        if len(value) > 10:
-            raise serializers.ValidationError("A project can have a maximum of 10 images.")
-        return value
-
-    def validate_videos(self, value):
-        """Limit to 5 videos per project"""
-        if len(value) > 5:
-            raise serializers.ValidationError("A project can have a maximum of 5 videos.")
-        return value
+    def get_tags(self, obj):
+        if not obj.tags or not isinstance(obj.tags, str):
+            return []
+        return [tag.strip() for tag in obj.tags.split(',') if tag.strip()]
 
 
 class ServiceSerializer(serializers.ModelSerializer):
@@ -76,6 +71,8 @@ class ServiceSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'description', 'icon', 'highlights', 'featured')
 
     def get_highlights(self, obj):
+        if not obj.highlights or not isinstance(obj.highlights, str):
+            return []
         return [item.strip() for item in obj.highlights.split(',') if item.strip()]
 
 
@@ -102,3 +99,50 @@ class ContactMessageSerializer(serializers.ModelSerializer):
         model = ContactMessage
         fields = ('id', 'name', 'email', 'message', 'date_received')
         read_only_fields = ('date_received',)
+
+
+class SiteSettingsSerializer(serializers.ModelSerializer):
+    companyInfo = serializers.SerializerMethodField()
+    siteImages = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SiteSettings
+        fields = ('companyInfo', 'siteImages')
+
+    def get_companyInfo(self, obj):
+        return {
+            'shortName': obj.short_name,
+            'fullName': obj.full_name,
+            'tagline': obj.tagline,
+            'phoneDisplay': obj.phone_display,
+            'phoneHref': obj.phone_href,
+            'secondaryPhoneDisplay': obj.secondary_phone_display,
+            'secondaryPhoneHref': obj.secondary_phone_href,
+            'email': obj.email,
+            'addressLine1': obj.address_line1,
+            'addressLine2': obj.address_line2,
+            'serviceArea': obj.service_area,
+            'hours': obj.hours,
+        }
+
+    def get_siteImages(self, obj):
+        request = self.context.get('request')
+        def get_url(field):
+            return request.build_absolute_uri(field.url) if field else None
+            
+        def get_absolute_path(path):
+            if not path or not request:
+                return path
+            return request.build_absolute_uri(path)
+
+        return {
+            'logo': get_url(obj.logo),
+            'hero': get_url(obj.hero),
+            'heroSlides': [get_absolute_path(slide) for slide in (obj.hero_slides or [])],
+            'about': get_url(obj.about),
+            'services': get_url(obj.services),
+            'projects': get_url(obj.projects),
+            'contact': get_url(obj.contact),
+            'team': get_url(obj.team),
+            'structural': get_url(obj.structural),
+        }

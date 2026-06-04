@@ -14,6 +14,7 @@ from .serializers import (
     TeamMemberSerializer,
     BlogPostSerializer,
     ContactMessageSerializer,
+    SiteSettingsSerializer,
 )
 from .permissions import ReadOnlyOrAdmin, ContactMessagePermission
 from rest_framework.views import APIView
@@ -75,38 +76,5 @@ class SiteSettingsView(APIView):
         settings = SiteSettings.objects.order_by('-id').first()
         if not settings:
             return Response({'companyInfo': {}, 'siteImages': {}})
-
-        def file_url(f):
-            try:
-                return f.url if f else None
-            except Exception:
-                return None
-
-        companyInfo = {
-            'shortName': settings.short_name,
-            'fullName': settings.full_name,
-            'tagline': settings.tagline,
-            'phoneDisplay': settings.phone_display,
-            'phoneHref': settings.phone_href,
-            'secondaryPhoneDisplay': settings.secondary_phone_display,
-            'secondaryPhoneHref': settings.secondary_phone_href,
-            'email': settings.email,
-            'addressLine1': settings.address_line1,
-            'addressLine2': settings.address_line2,
-            'serviceArea': settings.service_area,
-            'hours': settings.hours,
-        }
-
-        siteImages = {
-            'logo': file_url(settings.logo),
-            'hero': file_url(settings.hero),
-            'heroSlides': settings.hero_slides or [],
-            'about': file_url(settings.about),
-            'services': file_url(settings.services),
-            'projects': file_url(settings.projects),
-            'contact': file_url(settings.contact),
-            'team': file_url(settings.team),
-            'structural': file_url(settings.structural),
-        }
-
-        return Response({'companyInfo': companyInfo, 'siteImages': siteImages})
+        serializer = SiteSettingsSerializer(settings, context={'request': request})
+        return Response(serializer.data)
