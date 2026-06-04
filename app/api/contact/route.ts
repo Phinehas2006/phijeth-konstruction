@@ -34,6 +34,9 @@ export async function POST(request: Request) {
 
   const resendApiKey = process.env.RESEND_API_KEY
   const resendFromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev'
+  const resendFrom = resendFromEmail.includes('<')
+    ? resendFromEmail
+    : `Phijeth Konstruction <${resendFromEmail}>`
 
   // Resolve contact recipient: env var preferred, then site settings, then fallback static data
   let contactEmail = process.env.CONTACT_EMAIL
@@ -60,10 +63,10 @@ export async function POST(request: Request) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: resendFromEmail,
+      from: resendFrom,
       to: [contactEmail],
       reply_to: email,
-      subject: `New website inquiry from ${name}`,
+      subject: 'Phijeth Konstruction',
       text: [
         `Name: ${name}`,
         `Email: ${email}`,

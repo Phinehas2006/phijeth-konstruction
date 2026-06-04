@@ -8,6 +8,7 @@ from .models import (
     TeamMember,
     BlogPost,
     ContactMessage,
+    SiteSettings,
 )
 
 
@@ -65,3 +66,38 @@ class ContactMessageAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'date_received')
     search_fields = ('name', 'email', 'message')
     readonly_fields = ('name', 'email', 'message', 'date_received')
+
+
+@admin.register(SiteSettings)
+class SiteSettingsAdmin(admin.ModelAdmin):
+    fieldsets = (
+        ('Company Info', {
+            'fields': (
+                'short_name',
+                'full_name',
+                'tagline',
+                'phone_display',
+                'phone_href',
+                'secondary_phone_display',
+                'secondary_phone_href',
+                'email',
+                'address_line1',
+                'address_line2',
+                'service_area',
+                'hours',
+            )
+        }),
+        ('Images', {
+            'fields': (
+                'logo',
+                'hero',
+                'hero_slides',
+                'about',
+                'services',
+                'projects',
+                'contact',
+                'team',
+                'structural',
+            )
+        }),
+    )
