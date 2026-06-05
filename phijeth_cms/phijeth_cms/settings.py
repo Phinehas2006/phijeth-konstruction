@@ -10,6 +10,12 @@ try:
     import whitenoise
 except ImportError:
     whitenoise = None
+try:
+    import cloudinary
+    import cloudinary_storage
+except ImportError:
+    cloudinary = None
+    cloudinary_storage = None
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / '.env')
@@ -40,6 +46,9 @@ INSTALLED_APPS = [
     'corsheaders',
     'cms_app',
 ]
+if cloudinary and cloudinary_storage:
+    INSTALLED_APPS.insert(6, 'cloudinary')
+    INSTALLED_APPS.insert(7, 'cloudinary_storage')
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -124,6 +133,10 @@ if whitenoise:
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+if os.getenv('CLOUDINARY_URL') and cloudinary_storage:
+    STORAGES['default'] = {
+        'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage',
+    }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
