@@ -1,5 +1,26 @@
 from django.db import models
 
+try:
+    from cloudinary_storage.storage import VideoMediaCloudinaryStorage
+    from cloudinary_storage.validators import validate_video
+except ImportError:
+    VideoMediaCloudinaryStorage = None
+
+    def validate_video(value):
+        return None
+
+
+project_video_file_options = {
+    'upload_to': 'projects/videos/',
+    'blank': True,
+    'null': True,
+}
+if VideoMediaCloudinaryStorage:
+    project_video_file_options.update(
+        storage=VideoMediaCloudinaryStorage(),
+        validators=[validate_video],
+    )
+
 
 class Project(models.Model):
     class Status(models.TextChoices):
@@ -49,7 +70,7 @@ class ProjectImage(models.Model):
 class ProjectVideo(models.Model):
     project = models.ForeignKey(Project, related_name='videos', on_delete=models.CASCADE)
     url = models.URLField(blank=True)
-    file = models.FileField(upload_to='projects/videos/', blank=True, null=True)
+    file = models.FileField(**project_video_file_options)
     caption = models.CharField(max_length=255, blank=True)
     order = models.PositiveIntegerField(default=0)
 
