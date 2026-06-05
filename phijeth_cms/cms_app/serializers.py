@@ -28,8 +28,21 @@ class ProjectSerializer(serializers.ModelSerializer):
     images = ProjectImageSerializer(many=True, read_only=True)
     videos = ProjectVideoSerializer(many=True, read_only=True)
     category = serializers.CharField(source='project_type')
-    image = serializers.ImageField(source='main_image', allow_null=True)
+
+    # Return a URL reliably across storage backends (Cloudinary or filesystem).
+    image = serializers.SerializerMethodField()
+
     tags = serializers.SerializerMethodField()
+
+    def get_image(self, obj):
+        field = getattr(obj, 'main_image', None)
+        if not field:
+            return None
+        try:
+            return field.url
+        except ValueError:
+            return None
+
 
     class Meta:
         model = Project

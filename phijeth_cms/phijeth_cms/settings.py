@@ -133,10 +133,40 @@ if whitenoise:
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-if os.getenv('CLOUDINARY_URL') and cloudinary_storage:
+
+cloudinary_cloud_name = os.getenv('CLOUDINARY_CLOUD_NAME')
+cloudinary_api_key = os.getenv('CLOUDINARY_API_KEY')
+cloudinary_api_secret = os.getenv('CLOUDINARY_API_SECRET')
+cloudinary_url = os.getenv('CLOUDINARY_URL')
+cloudinary_has_explicit_credentials = bool(
+    cloudinary_cloud_name and cloudinary_api_key and cloudinary_api_secret
+)
+
+# Render stores media in Cloudinary when the Cloudinary backend is available.
+# We configure it explicitly from the Render env vars so Django never silently
+# falls back to local FileSystemStorage in production.
+cloudinary_enabled = bool(
+    cloudinary_url or (cloudinary_cloud_name and cloudinary_api_key and cloudinary_api_secret)
+)
+
+if cloudinary_enabled and cloudinary and cloudinary_storage:
+    if cloudinary_has_explicit_credentials:
+        cloudinary.config(
+            cloud_name=cloudinary_cloud_name,
+            api_key=cloudinary_api_key,
+            api_secret=cloudinary_api_secret,
+            secure=True,
+        )
+        CLOUDINARY_STORAGE = {
+            'CLOUD_NAME': cloudinary_cloud_name,
+            'API_KEY': cloudinary_api_key,
+            'API_SECRET': cloudinary_api_secret,
+            'SECURE': True,
+        }
     STORAGES['default'] = {
         'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage',
     }
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
