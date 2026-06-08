@@ -50,7 +50,7 @@ class TeamMemberViewSet(viewsets.ModelViewSet):
 
 
 class BlogPostViewSet(viewsets.ModelViewSet):
-    queryset = BlogPost.objects.all()
+    queryset = BlogPost.objects.prefetch_related('images').all()
     serializer_class = BlogPostSerializer
     permission_classes = [ReadOnlyOrAdmin]
     filterset_fields = ['category']

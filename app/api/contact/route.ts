@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server'
+import { CMS_API_BASE } from '@/lib/api'
 import { getSiteData } from '@/lib/site'
 import { companyInfo as fallbackCompany } from '@/lib/data'
 
 type ContactPayload = {
   name?: string
+  phone?: string
   email?: string
   message?: string
 }
@@ -15,12 +17,13 @@ function isValidEmail(email: string) {
 export async function POST(request: Request) {
   const body = (await request.json()) as ContactPayload
   const name = body.name?.trim() || ''
+  const phone = body.phone?.trim() || ''
   const email = body.email?.trim() || ''
   const message = body.message?.trim() || ''
 
-  if (!name || !email || !message) {
+  if (!name || !phone || !email || !message) {
     return NextResponse.json(
-      { error: 'Please complete your name, email, and message.' },
+      { error: 'Please complete your full name, phone number, email address, and message.' },
       { status: 400 },
     )
   }
@@ -69,6 +72,7 @@ export async function POST(request: Request) {
       subject: 'Phijeth Konstruction',
       text: [
         `Name: ${name}`,
+        `Phone: ${phone}`,
         `Email: ${email}`,
         '',
         'Message:',
@@ -78,6 +82,7 @@ export async function POST(request: Request) {
         <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #0b1f3b;">
           <h2 style="margin-bottom: 16px;">New Website Inquiry</h2>
           <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Phone:</strong> ${phone}</p>
           <p><strong>Email:</strong> ${email}</p>
           <p><strong>Message:</strong></p>
           <p style="white-space: pre-line;">${message}</p>
@@ -94,6 +99,19 @@ export async function POST(request: Request) {
       { error: 'We could not send your message right now. Please try again.' },
       { status: 502 },
     )
+  }
+
+  try {
+    await fetch(`${CMS_API_BASE.replace(/\/+$/, '')}/api/contact/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name, phone, email, message }),
+      cache: 'no-store',
+    })
+  } catch (error) {
+    console.error('Failed to archive contact message in CMS:', error)
   }
 
   return NextResponse.json({ success: true })

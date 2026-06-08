@@ -21,14 +21,32 @@ type ProjectCardProps = {
 }
 
 const paletteClasses: Record<string, string> = {
-  blue: 'from-primary to-[#163D76]',
-  orange: 'from-accent to-[#E76700]',
+  blue: 'from-[#0B4BA8] to-[#1F6FEB]',
+  green: 'from-[#166534] to-[#22A05A]',
+  orange: 'from-[#C75400] to-[#FF7A00]',
+  red: 'from-[#991B1B] to-[#E03535]',
+  gray: 'from-[#4B5563] to-[#9CA3AF]',
+  black: 'from-[#050505] to-[#262626]',
   slate: 'from-[#31435D] to-[#4A6285]',
   steel: 'from-[#475569] to-[#1F6FEB]',
 }
 
+const paletteAccentClasses: Record<string, string> = {
+  blue: 'bg-[#EAF2FF] text-[#0B4BA8]',
+  green: 'bg-[#EAF8EF] text-[#166534]',
+  orange: 'bg-[#FFF4E8] text-[#C75400]',
+  red: 'bg-[#FFF0F0] text-[#991B1B]',
+  gray: 'bg-[#F3F4F6] text-[#374151]',
+  black: 'bg-[#EFEFEF] text-[#111111]',
+  slate: 'bg-[#EEF2F7] text-[#31435D]',
+  steel: 'bg-[#EDF4FF] text-[#1F6FEB]',
+}
+
 export function ProjectCard({ project, onView, compact = false }: ProjectCardProps) {
   const reduceMotion = useReducedMotion()
+  const palette = project.palette || 'blue'
+  const gradientClass = paletteClasses[palette] ?? paletteClasses.blue
+  const accentClass = paletteAccentClasses[palette] ?? paletteAccentClasses.blue
 
   return (
     <motion.article
@@ -47,7 +65,7 @@ export function ProjectCard({ project, onView, compact = false }: ProjectCardPro
       style={{ transformStyle: 'preserve-3d' }}
       className="group overflow-hidden rounded-[1.75rem] border border-[#d8e6fb] bg-[linear-gradient(180deg,#eef5ff_0%,#e4eefc_100%)] shadow-[0_14px_40px_rgba(11,31,59,0.08)]"
     >
-      <div className={`h-56 bg-gradient-to-br ${paletteClasses[project.palette] ?? paletteClasses.blue} p-6 text-white`}>
+      <div className={`h-56 bg-gradient-to-br ${gradientClass} p-6 text-white`}>
         <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-[1.25rem] border border-white/[0.15] bg-black/10 p-5">
           {project.image && (
             <>
@@ -74,15 +92,15 @@ export function ProjectCard({ project, onView, compact = false }: ProjectCardPro
         </div>
       </div>
       <div className="bg-transparent p-6 md:p-7">
-        <div className="inline-flex items-center gap-2 rounded-full bg-[#EDF4FF] px-3 py-2 text-sm text-muted-foreground">
-          <MapPin className="h-4 w-4 text-secondary" />
+        <div className={`inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold ${accentClass}`}>
+          <MapPin className="h-4 w-4" />
           {project.location}
         </div>
         <div className="mt-4 rounded-[1.25rem] bg-white/85 p-4 shadow-[inset_0_0_0_1px_rgba(31,111,235,0.08)]">
           <p className="text-sm leading-7 text-muted-foreground">{project.description}</p>
         </div>
-        <div className={`mt-5 rounded-[1.25rem] bg-[#FFF4E8] p-4 ${compact ? '' : ''}`}>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-secondary">Outcome</p>
+        <div className={`mt-5 rounded-[1.25rem] p-4 ${accentClass} ${compact ? '' : ''}`}>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em]">Outcome</p>
           <p className="mt-2 text-sm leading-7 text-foreground">{project.result}</p>
         </div>
         <motion.button
@@ -90,7 +108,7 @@ export function ProjectCard({ project, onView, compact = false }: ProjectCardPro
           whileHover={reduceMotion ? undefined : { x: 4 }}
           whileTap={{ scale: 0.98 }}
           onClick={onView}
-          className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-secondary transition-colors hover:text-accent"
+          className={`mt-5 inline-flex items-center gap-2 text-sm font-bold transition-colors ${accentClass} rounded-full px-4 py-2 hover:opacity-85`}
         >
           View project details
           <ArrowRight className="h-4 w-4" />

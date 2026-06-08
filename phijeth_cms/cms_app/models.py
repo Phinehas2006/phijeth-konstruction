@@ -28,6 +28,16 @@ class Project(models.Model):
         COMPLETED = 'completed', 'Completed'
         PLANNED = 'planned', 'Planned'
 
+    class Palette(models.TextChoices):
+        BLUE = 'blue', 'Blue'
+        GREEN = 'green', 'Green'
+        ORANGE = 'orange', 'Orange'
+        RED = 'red', 'Red'
+        GRAY = 'gray', 'Gray'
+        BLACK = 'black', 'Black'
+        SLATE = 'slate', 'Slate'
+        STEEL = 'steel', 'Steel'
+
     title = models.CharField(max_length=200)
     project_type = models.CharField(max_length=100)
     category = models.CharField(max_length=100, blank=True)
@@ -36,7 +46,7 @@ class Project(models.Model):
     client_name = models.CharField(max_length=200, blank=True)
     description = models.TextField()
     result = models.TextField(blank=True)
-    palette = models.CharField(max_length=50, default='blue')
+    palette = models.CharField(max_length=50, choices=Palette.choices, default=Palette.BLUE)
     main_image = models.FileField(upload_to='projects/images/', blank=True, null=True)
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
@@ -148,8 +158,22 @@ class BlogPost(models.Model):
         return self.title
 
 
+class BlogImage(models.Model):
+    post = models.ForeignKey(BlogPost, related_name='images', on_delete=models.CASCADE)
+    image = models.FileField(upload_to='blog/images/')
+    caption = models.CharField(max_length=255, blank=True)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return f'Image for {self.post.title}'
+
+
 class ContactMessage(models.Model):
     name = models.CharField(max_length=200)
+    phone = models.CharField(max_length=50, blank=True)
     email = models.EmailField()
     message = models.TextField()
     date_received = models.DateTimeField(auto_now_add=True)

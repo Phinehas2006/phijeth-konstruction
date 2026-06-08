@@ -60,6 +60,9 @@ export default function ProjectsPage() {
       <section className="section-pad">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal>
+            <h2 className="mb-8 max-w-4xl font-heading text-4xl font-black uppercase leading-tight text-primary sm:text-5xl lg:text-6xl">
+              Explore Our Recent Projects
+            </h2>
             <SectionHeading
               eyebrow="Completed Works"
               title="Recent projects delivered with professionalism and attention to detail."

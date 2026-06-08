@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useInView, useReducedMotion } from 'framer-motion'
 
 type CountUpStatProps = {
   value: string
@@ -9,8 +10,13 @@ type CountUpStatProps = {
 
 export function CountUpStat({ value, label }: CountUpStatProps) {
   const [displayValue, setDisplayValue] = useState('0')
+  const ref = useRef<HTMLParagraphElement>(null)
+  const isInView = useInView(ref, { once: true, margin: '-80px' })
+  const reduceMotion = useReducedMotion()
 
   useEffect(() => {
+    if (!isInView) return
+
     // Extract numeric part and suffix (e.g., "25+" -> { num: 25, suffix: "+" })
     const match = value.match(/^(\d+)(.*)$/)
     if (!match) {
@@ -20,6 +26,11 @@ export function CountUpStat({ value, label }: CountUpStatProps) {
 
     const finalNumber = parseInt(match[1], 10)
     const suffix = match[2] || ''
+
+    if (reduceMotion) {
+      setDisplayValue(`${finalNumber}${suffix}`)
+      return
+    }
 
     let currentValue = 0
     const increment = Math.ceil(finalNumber / 50) // Animate over ~50 steps
@@ -36,9 +47,9 @@ export function CountUpStat({ value, label }: CountUpStatProps) {
     }, interval)
 
     return () => clearInterval(timer)
-  }, [value])
+  }, [isInView, reduceMotion, value])
 
   return (
-    <p className="font-heading text-4xl font-bold text-white">{displayValue}</p>
+    <p ref={ref} className="font-heading text-4xl font-bold text-white">{displayValue}</p>
   )
 }

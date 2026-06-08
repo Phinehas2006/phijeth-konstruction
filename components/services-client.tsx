@@ -1,13 +1,13 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Building2, ClipboardList, Route, Ruler } from 'lucide-react'
+import { Building2, CheckCircle2, ClipboardList, Route, Ruler } from 'lucide-react'
 import { Reveal, StaggerGroup, StaggerItem } from '@/components/motion/viewport'
 import { PageHero } from '@/components/page-hero'
 import { SectionHeading } from '@/components/section-heading'
 import { fetchCms } from '@/lib/api'
 import { getSiteData } from '@/lib/site'
-import { siteImages as fallbackSiteImages } from '@/lib/data'
+import { coreServices, siteImages as fallbackSiteImages } from '@/lib/data'
 
 const serviceIcons = {
   building2: Building2,
@@ -58,12 +58,25 @@ export default function ServicesClient() {
       <section className="section-pad">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal>
+            <h2 className="mb-8 font-heading text-4xl font-black uppercase leading-tight text-primary sm:text-5xl lg:text-6xl">
+              What We Offer
+            </h2>
             <SectionHeading
               eyebrow="Service List"
               title="Core engineering and construction capabilities."
               description="Each service is delivered with close attention to planning, coordination, and quality control."
             />
           </Reveal>
+          <StaggerGroup className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {coreServices.map((service) => (
+              <StaggerItem key={service}>
+                <div className="flex h-full items-start gap-3 rounded-[1.25rem] border border-[#d8e6fb] bg-white p-5 shadow-[0_12px_32px_rgba(11,31,59,0.08)]">
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-accent" />
+                  <p className="text-base font-bold leading-6 text-primary">{service}</p>
+                </div>
+              </StaggerItem>
+            ))}
+          </StaggerGroup>
           <StaggerGroup className="mt-12 grid gap-6 md:grid-cols-2">
             {services.map((service) => {
               const Icon = serviceIcons[service.icon as keyof typeof serviceIcons] ?? Building2

@@ -7,6 +7,7 @@ from .models import (
     Testimonial,
     TeamMember,
     BlogPost,
+    BlogImage,
     ContactMessage,
     SiteSettings,
 )
@@ -22,6 +23,12 @@ class ProjectVideoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectVideo
         fields = ('id', 'url', 'file', 'caption', 'order')
+
+
+class BlogImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BlogImage
+        fields = ('id', 'image', 'caption', 'order')
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -102,15 +109,23 @@ class TeamMemberSerializer(serializers.ModelSerializer):
 
 
 class BlogPostSerializer(serializers.ModelSerializer):
+    images = BlogImageSerializer(many=True, read_only=True)
+    reading_time = serializers.SerializerMethodField()
+
     class Meta:
         model = BlogPost
-        fields = ('id', 'title', 'content', 'cover_image', 'author', 'publish_date', 'category', 'created_at', 'updated_at')
+        fields = ('id', 'title', 'content', 'cover_image', 'author', 'publish_date', 'category', 'images', 'reading_time', 'created_at', 'updated_at')
+
+    def get_reading_time(self, obj):
+        words = len((obj.content or '').split())
+        minutes = max(1, round(words / 200))
+        return minutes
 
 
 class ContactMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContactMessage
-        fields = ('id', 'name', 'email', 'message', 'date_received')
+        fields = ('id', 'name', 'phone', 'email', 'message', 'date_received')
         read_only_fields = ('date_received',)
 
 

@@ -23,11 +23,23 @@ type ProjectGalleryModalProps = {
     year: string
     description: string
     result?: string
+    palette?: string
     image?: string | null
     images?: ProjectMedia[]
     videos?: ProjectMedia[]
   } | null
   onClose: () => void
+}
+
+const palettePanelClasses: Record<string, string> = {
+  blue: 'from-[#0B4BA8] to-[#1F6FEB]',
+  green: 'from-[#166534] to-[#22A05A]',
+  orange: 'from-[#C75400] to-[#FF7A00]',
+  red: 'from-[#991B1B] to-[#E03535]',
+  gray: 'from-[#4B5563] to-[#9CA3AF]',
+  black: 'from-[#050505] to-[#262626]',
+  slate: 'from-[#31435D] to-[#4A6285]',
+  steel: 'from-[#475569] to-[#1F6FEB]',
 }
 
 type GalleryItem = {
@@ -112,6 +124,8 @@ export function ProjectGalleryModal({ project, onClose }: ProjectGalleryModalPro
   }, [project])
 
   const currentMedia = allMedia[currentMediaIndex] ?? null
+  const palette = project?.palette || 'blue'
+  const paletteClass = palettePanelClasses[palette] ?? palettePanelClasses.blue
 
   function previousMedia() {
     if (allMedia.length < 2) return
@@ -240,15 +254,17 @@ export function ProjectGalleryModal({ project, onClose }: ProjectGalleryModalPro
               </div>
 
               <aside className="flex max-h-[92vh] flex-col overflow-y-auto p-6 sm:p-8">
-                <p className="text-sm font-semibold uppercase tracking-[0.22em] text-secondary">
+                <div className={`-mx-2 -mt-2 rounded-[1.25rem] bg-gradient-to-br ${paletteClass} p-5 text-white`}>
+                <p className="text-sm font-semibold uppercase tracking-[0.22em] text-white/80">
                   {project.category}
                 </p>
-                <h2 className="mt-4 font-heading text-2xl font-bold text-primary sm:text-3xl">
+                <h2 className="mt-4 font-heading text-2xl font-bold sm:text-3xl">
                   {project.title}
                 </h2>
-                <p className="mt-3 text-sm font-medium text-muted-foreground">
+                <p className="mt-3 text-sm font-medium text-white/75">
                   {project.location} / {project.year}
                 </p>
+                </div>
                 <p className="mt-6 text-base leading-8 text-muted-foreground">
                   {project.description}
                 </p>

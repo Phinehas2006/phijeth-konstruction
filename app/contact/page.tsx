@@ -25,6 +25,7 @@ function WhatsAppIcon() {
 export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: '',
+    phone: '',
     email: '',
     message: '',
   })
@@ -76,7 +77,7 @@ export default function ContactPage() {
       }
 
       setSubmitted(true)
-      setFormData({ name: '', email: '', message: '' })
+      setFormData({ name: '', phone: '', email: '', message: '' })
       window.setTimeout(() => setSubmitted(false), 5000)
     } catch {
       setSubmitError('We could not send your message right now. Please try again.')
@@ -120,7 +121,7 @@ export default function ContactPage() {
             <form onSubmit={handleSubmit} className="mt-8 space-y-6">
               <motion.div whileFocus={{ scale: 1.01 }}>
                 <label htmlFor="name" className="block text-sm font-semibold text-foreground">
-                  Name
+                  Full Name
                 </label>
                 <input
                   id="name"
@@ -134,8 +135,23 @@ export default function ContactPage() {
                 />
               </motion.div>
               <motion.div whileFocus={{ scale: 1.01 }}>
+                <label htmlFor="phone" className="block text-sm font-semibold text-foreground">
+                  Phone Number
+                </label>
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  required
+                  className="mt-2 w-full rounded-2xl border border-input bg-white px-4 py-3 text-foreground transition-all duration-300 focus:border-secondary focus:shadow-[0_0_0_4px_rgba(31,111,235,0.16)] focus:outline-none"
+                  placeholder="+237 6XX XXX XXX"
+                />
+              </motion.div>
+              <motion.div whileFocus={{ scale: 1.01 }}>
                 <label htmlFor="email" className="block text-sm font-semibold text-foreground">
-                  Email
+                  Email Address
                 </label>
                 <input
                   id="email"
@@ -194,29 +210,38 @@ export default function ContactPage() {
                 eyebrow="Contact Info"
                 title="Company address and direct contact details."
               />
-              <div className="mt-8 space-y-4 text-sm text-muted-foreground">
-                <div className="flex items-start gap-3">
-                  <MapPin className="mt-0.5 h-5 w-5 flex-shrink-0 text-secondary" />
-                  <div className="flex-1 rounded-[1.25rem] bg-white/80 p-4">
-                    <p>{companyInfo.addressLine1}</p>
-                    <p>{companyInfo.addressLine2}</p>
+              <div className="mt-8 space-y-5">
+                <div className="flex items-start gap-4 rounded-[1.4rem] border border-white/70 bg-white p-5 shadow-[0_18px_36px_rgba(11,31,59,0.10)]">
+                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-primary text-white">
+                    <MapPin className="h-5 w-5" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-secondary">Visit Us</p>
+                    <p className="mt-2 text-xl font-black leading-tight text-primary">{companyInfo.addressLine1}</p>
+                    <p className="mt-1 text-lg font-bold text-foreground">{companyInfo.addressLine2}</p>
                   </div>
                 </div>
-                <div className="flex items-start gap-3">
-                  <Phone className="mt-0.5 h-5 w-5 flex-shrink-0 text-secondary" />
-                  <div className="flex-1 rounded-[1.25rem] bg-white/80 p-4">
-                    <a href={companyInfo.phoneHref} className="block hover:text-secondary">
+                <div className="flex items-start gap-4 rounded-[1.4rem] border border-white/70 bg-white p-5 shadow-[0_18px_36px_rgba(11,31,59,0.10)]">
+                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-accent text-white">
+                    <Phone className="h-5 w-5" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-secondary">Call Directly</p>
+                    <a href={companyInfo.phoneHref} className="mt-2 block text-2xl font-black text-primary hover:text-secondary">
                       {companyInfo.phoneDisplay}
                     </a>
-                    <a href={companyInfo.secondaryPhoneHref} className="mt-1 block hover:text-secondary">
+                    <a href={companyInfo.secondaryPhoneHref} className="mt-1 block text-lg font-bold text-foreground hover:text-secondary">
                       {companyInfo.secondaryPhoneDisplay}
                     </a>
                   </div>
                 </div>
-                <div className="flex items-start gap-3">
-                  <Mail className="mt-0.5 h-5 w-5 flex-shrink-0 text-secondary" />
-                  <div className="flex-1 rounded-[1.25rem] bg-white/80 p-4">
-                    <a href={`mailto:${companyInfo.email}`} className="hover:text-secondary">
+                <div className="flex items-start gap-4 rounded-[1.4rem] border border-white/70 bg-white p-5 shadow-[0_18px_36px_rgba(11,31,59,0.10)]">
+                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-secondary text-white">
+                    <Mail className="h-5 w-5" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-secondary">Email Address</p>
+                    <a href={`mailto:${companyInfo.email}`} className="mt-2 block text-xl font-black text-primary hover:text-secondary">
                       {companyInfo.email}
                     </a>
                   </div>

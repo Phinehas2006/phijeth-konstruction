@@ -15,26 +15,38 @@ export const companyInfo = {
 
 export const siteImages = {
   logo: '/images/LOGO.png',
-  hero: '/images/homepage.jpg',
+  hero: '/images/1.jfif',
   heroSlides: [
-    '/images/homepage.jpg',
-    '/images/pexels-99816073-9346038.jpg',
-    '/images/pexels-maren-ferraro-3055534-29257600.jpg',
-    '/images/pexels-medinegurbet-21435626-13366868.jpg',
+    '/images/1.jfif',
+    '/images/2.jfif',
+    '/images/3.jfif',
+    '/images/4.jfif',
+    '/images/5.jfif',
+    '/images/6.jfif',
   ],
-  about: '/images/pexels-99816073-9346038.jpg',
-  services: '/images/pexels-alexandre-rezende-3362055-6345100.jpg',
-  projects: '/images/pexels-jimmy-liao-3615017-35748433.jpg',
-  contact: '/images/pexels-davidelocatelli-2383650.jpg',
-  team: '/images/pexels-thisvikto-10202856.jpg',
-  structural: '/images/pexels-oliver-dumlao-2154071505-33044594.jpg',
+  about: '/images/7.jfif',
+  services: '/images/8.jfif',
+  projects: '/images/9.jfif',
+  contact: '/images/11.jpg',
+  team: '/images/12.jpg',
+  structural: '/images/13.jpg',
 }
 
 export const homeStats = [
-  { label: 'Years of Experience', value: '25+' },
-  { label: 'Projects Completed', value: '240+' },
-  { label: 'Qualified Team Members', value: '40+' },
-  { label: 'Client Satisfaction', value: '98%' },
+  { label: 'Trust', value: '98%' },
+  { label: 'Experience', value: '25+' },
+  { label: 'Impact', value: '240+' },
+]
+
+export const coreServices = [
+  'Architectural Design',
+  'Residential Construction',
+  'Commercial Construction',
+  'Architectural & Structural Design',
+  'Renovation & Remodeling',
+  'Electrical & Plumbing Installation',
+  'Project Management & Consultancy',
+  'Building Maintenance & Repairs',
 ]
 
 export const services = [
@@ -82,7 +94,7 @@ export const featuredProjects = [
     description: 'A multi-level civil and structural delivery project with coordinated site logistics, reinforced concrete works, and fit-out sequencing.',
     result: 'Delivered on schedule with phased occupancy support for the client team.',
     palette: 'blue',
-    image: '/images/pexels-davidelocatelli-2383650.jpg',
+    image: '/images/14.jpg',
   },
   {
     id: 2,
@@ -92,8 +104,8 @@ export const featuredProjects = [
     year: '2024',
     description: 'A roadway construction package including grading, drainage integration, and pavement works for a new development corridor.',
     result: 'Improved access and traffic flow for a growing mixed-use district.',
-    palette: 'orange',
-    image: '/images/pexels-jimmy-liao-3615017-35748433.jpg',
+    palette: 'green',
+    image: '/images/15.jpg',
   },
   {
     id: 3,
@@ -103,8 +115,8 @@ export const featuredProjects = [
     year: '2023',
     description: 'A residential development executed with strong project controls, quality inspections, and a high-finish delivery standard.',
     result: 'Completed with strong client feedback and efficient closeout coordination.',
-    palette: 'slate',
-    image: '/images/pexels-oliver-dumlao-2154071505-33044594.jpg',
+    palette: 'red',
+    image: '/images/16.jpg',
   },
 ]
 
@@ -119,7 +131,7 @@ export const projects = [
     description: 'Heavy-duty surfacing, drainage, and site preparation works for an active industrial yard facility.',
     result: 'Reduced maintenance issues and improved operational access.',
     palette: 'steel',
-    image: '/images/pexels-construccion-total-2464540-6034140.jpg',
+    image: '/images/17.jpg',
   },
   {
     id: 5,
@@ -129,8 +141,8 @@ export const projects = [
     year: '2024',
     description: 'A coordinated housing estate package with structural works, finishing oversight, and site-wide infrastructure planning.',
     result: 'Delivered as a dependable, well-managed multi-home construction package.',
-    palette: 'blue',
-    image: '/images/homepage.jpg',
+    palette: 'gray',
+    image: '/images/18.jpg',
   },
   {
     id: 6,
@@ -140,8 +152,8 @@ export const projects = [
     year: '2023',
     description: 'Drainage and supporting road infrastructure executed to stabilize runoff and improve corridor resilience.',
     result: 'Strengthened long-term drainage performance for a busy route.',
-    palette: 'orange',
-    image: '/images/pexels-jimmy-liao-3615017-35748433.jpg',
+    palette: 'black',
+    image: '/images/19.jpg',
   },
 ]
 

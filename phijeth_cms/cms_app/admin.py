@@ -7,6 +7,7 @@ from .models import (
     Testimonial,
     TeamMember,
     BlogPost,
+    BlogImage,
     ContactMessage,
     SiteSettings,
 )
@@ -28,10 +29,18 @@ class ProjectVideoInline(admin.StackedInline):
     ordering = ['order']
 
 
+class BlogImageInline(admin.StackedInline):
+    model = BlogImage
+    extra = 1
+    max_num = 12
+    fields = ('image', 'caption', 'order')
+    ordering = ['order']
+
+
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('title', 'project_type', 'location', 'status', 'featured', 'start_date', 'end_date')
-    list_filter = ('status', 'project_type', 'featured')
+    list_display = ('title', 'project_type', 'location', 'palette', 'status', 'featured', 'start_date', 'end_date')
+    list_filter = ('status', 'project_type', 'palette', 'featured')
     search_fields = ('title', 'location', 'client_name', 'tags')
     inlines = [ProjectImageInline, ProjectVideoInline]
 
@@ -59,13 +68,14 @@ class BlogPostAdmin(admin.ModelAdmin):
     list_display = ('title', 'author', 'publish_date', 'category')
     list_filter = ('category', 'publish_date')
     search_fields = ('title', 'author', 'content')
+    inlines = [BlogImageInline]
 
 
 @admin.register(ContactMessage)
 class ContactMessageAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'date_received')
-    search_fields = ('name', 'email', 'message')
-    readonly_fields = ('name', 'email', 'message', 'date_received')
+    list_display = ('name', 'phone', 'email', 'date_received')
+    search_fields = ('name', 'phone', 'email', 'message')
+    readonly_fields = ('name', 'phone', 'email', 'message', 'date_received')
 
 
 @admin.register(SiteSettings)
