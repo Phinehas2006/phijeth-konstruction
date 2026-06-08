@@ -51,6 +51,8 @@ export function ProjectCard({ project, onView, compact = false }: ProjectCardPro
   return (
     <motion.article
       layout
+      role={onView ? 'button' : undefined}
+      tabIndex={onView ? 0 : undefined}
       whileHover={
         reduceMotion
           ? undefined
@@ -63,7 +65,17 @@ export function ProjectCard({ project, onView, compact = false }: ProjectCardPro
       }
       transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
       style={{ transformStyle: 'preserve-3d' }}
-      className="group overflow-hidden rounded-[1.75rem] border border-[#d8e6fb] bg-[linear-gradient(180deg,#eef5ff_0%,#e4eefc_100%)] shadow-[0_14px_40px_rgba(11,31,59,0.08)]"
+      onClick={onView}
+      onKeyDown={(event) => {
+        if (!onView) return
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault()
+          onView()
+        }
+      }}
+      className={`group overflow-hidden rounded-[1.75rem] border border-[#d8e6fb] bg-[linear-gradient(180deg,#eef5ff_0%,#e4eefc_100%)] shadow-[0_14px_40px_rgba(11,31,59,0.08)] ${
+        onView ? 'cursor-pointer focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-secondary/25' : ''
+      }`}
     >
       <div className={`h-56 bg-gradient-to-br ${gradientClass} p-6 text-white`}>
         <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-[1.25rem] border border-white/[0.15] bg-black/10 p-5">
@@ -107,7 +119,10 @@ export function ProjectCard({ project, onView, compact = false }: ProjectCardPro
           type="button"
           whileHover={reduceMotion ? undefined : { x: 4 }}
           whileTap={{ scale: 0.98 }}
-          onClick={onView}
+          onClick={(event) => {
+            event.stopPropagation()
+            onView?.()
+          }}
           className={`mt-5 inline-flex items-center gap-2 text-sm font-bold transition-colors ${accentClass} rounded-full px-4 py-2 hover:opacity-85`}
         >
           View project details

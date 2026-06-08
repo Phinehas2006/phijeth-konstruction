@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Calendar, User } from 'lucide-react'
+import { ArrowLeft, Calendar, Clock3, User } from 'lucide-react'
 import { fetchCms } from '@/lib/api'
 
 type BlogPost = {
@@ -16,6 +16,8 @@ type BlogPost = {
   author: string
   publish_date: string
   category: string
+  reading_time?: number
+  images?: Array<{ id: number; image: string; caption: string; order: number }>
   created_at: string
 }
 
@@ -73,8 +75,11 @@ export default function BlogPostPage() {
     )
   }
 
+  const paragraphs = post.content.split('\n\n').filter((paragraph) => paragraph.trim())
+  const articleImages = [...(post.images ?? [])].sort((a, b) => a.order - b.order)
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-[#fbfcfe]">
       {post.cover_image && (
         <div className="relative h-96 w-full overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 md:h-[500px]">
           <Image
@@ -89,7 +94,7 @@ export default function BlogPostPage() {
       )}
 
       <article className="py-12 sm:py-16 md:py-20">
-        <div className="container mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -100,7 +105,7 @@ export default function BlogPostPage() {
               Back to blog
             </Link>
 
-            <div className="mt-6 flex flex-wrap items-center gap-4 text-sm font-medium text-muted-foreground">
+            <div className="mt-6 flex flex-wrap items-center gap-4 border-y border-border py-4 text-sm font-semibold text-muted-foreground">
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
                 {formatDate(post.publish_date)}
@@ -109,22 +114,50 @@ export default function BlogPostPage() {
                 <User className="h-4 w-4" />
                 {post.author}
               </div>
+              <div className="flex items-center gap-2">
+                <Clock3 className="h-4 w-4" />
+                {post.reading_time ?? 1} min read
+              </div>
               <span className="rounded-full bg-[#EAF2FF] px-3 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-secondary">
                 {post.category}
               </span>
             </div>
 
-            <h1 className="mt-6 font-heading text-4xl font-bold text-primary md:text-5xl">
+            <h1 className="mt-8 font-heading text-4xl font-black leading-tight text-primary md:text-6xl">
               {post.title}
             </h1>
 
-            <div className="prose prose-sm max-w-none text-base leading-8 text-foreground sm:prose-base md:prose-lg">
-              <div className="mt-10 space-y-6">
-                {post.content.split('\n\n').map((paragraph, index) => (
-                  <p key={index} className="text-base leading-8 text-muted-foreground">
-                    {paragraph}
-                  </p>
-                ))}
+            <div className="mt-10 max-w-none">
+              <div className="space-y-8">
+                {paragraphs.map((paragraph, index) => {
+                  const image = articleImages[index - 1]
+
+                  return (
+                    <div key={`${index}-${paragraph.slice(0, 18)}`} className="space-y-8">
+                      {image ? (
+                        <figure className="overflow-hidden rounded-[1.25rem] border border-[#d8e6fb] bg-white shadow-[0_18px_48px_rgba(11,31,59,0.10)]">
+                          <div className="relative aspect-[16/9]">
+                            <Image
+                              src={image.image}
+                              alt={image.caption || post.title}
+                              fill
+                              sizes="(min-width: 1024px) 768px, 100vw"
+                              className="object-cover"
+                            />
+                          </div>
+                          {image.caption ? (
+                            <figcaption className="px-5 py-4 text-sm font-medium text-muted-foreground">
+                              {image.caption}
+                            </figcaption>
+                          ) : null}
+                        </figure>
+                      ) : null}
+                      <p className="text-[1.08rem] leading-9 text-[#344054] md:text-lg md:leading-10">
+                        {paragraph}
+                      </p>
+                    </div>
+                  )
+                })}
               </div>
             </div>
 

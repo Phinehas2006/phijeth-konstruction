@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { ArrowRight, Calendar, User } from 'lucide-react'
+import { ArrowRight, Calendar, Clock3, User } from 'lucide-react'
 import { fetchCms } from '@/lib/api'
 import { siteImages as fallbackSiteImages } from '@/lib/data'
 import { getSiteData } from '@/lib/site'
@@ -20,6 +20,7 @@ type BlogPost = {
   author: string
   publish_date: string
   category: string
+  reading_time?: number
   created_at: string
 }
 
@@ -170,6 +171,10 @@ export default function BlogPage() {
                         <div className="flex items-center gap-1">
                           <User className="h-3.5 w-3.5" />
                           {post.author}
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Clock3 className="h-3.5 w-3.5" />
+                          {post.reading_time ?? 1} min read
                         </div>
                         <span className="rounded-full bg-[#EAF2FF] px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-secondary">
                           {post.category}

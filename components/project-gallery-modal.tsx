@@ -42,6 +42,17 @@ const palettePanelClasses: Record<string, string> = {
   steel: 'from-[#475569] to-[#1F6FEB]',
 }
 
+const paletteSoftClasses: Record<string, string> = {
+  blue: 'bg-[#EAF2FF] text-[#0B4BA8]',
+  green: 'bg-[#EAF8EF] text-[#166534]',
+  orange: 'bg-[#FFF4E8] text-[#C75400]',
+  red: 'bg-[#FFF0F0] text-[#991B1B]',
+  gray: 'bg-[#F3F4F6] text-[#374151]',
+  black: 'bg-[#EFEFEF] text-[#111111]',
+  slate: 'bg-[#EEF2F7] text-[#31435D]',
+  steel: 'bg-[#EDF4FF] text-[#1F6FEB]',
+}
+
 type GalleryItem = {
   key: string
   type: 'image' | 'video'
@@ -126,6 +137,7 @@ export function ProjectGalleryModal({ project, onClose }: ProjectGalleryModalPro
   const currentMedia = allMedia[currentMediaIndex] ?? null
   const palette = project?.palette || 'blue'
   const paletteClass = palettePanelClasses[palette] ?? palettePanelClasses.blue
+  const paletteSoftClass = paletteSoftClasses[palette] ?? paletteSoftClasses.blue
 
   function previousMedia() {
     if (allMedia.length < 2) return
@@ -154,6 +166,17 @@ export function ProjectGalleryModal({ project, onClose }: ProjectGalleryModalPro
     return () => window.removeEventListener('keydown', handleKeyDown)
   })
 
+  useEffect(() => {
+    if (!project) return
+
+    const originalOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.body.style.overflow = originalOverflow
+    }
+  }, [project])
+
   return (
     <AnimatePresence>
       {project ? (
@@ -162,7 +185,7 @@ export function ProjectGalleryModal({ project, onClose }: ProjectGalleryModalPro
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.25 }}
-          className="fixed inset-0 z-[80] flex items-center justify-center overflow-y-auto bg-[#081425]/75 p-3 backdrop-blur-md sm:p-4"
+          className="fixed inset-0 z-[140] flex items-stretch justify-center overflow-y-auto bg-[#081425]/75 backdrop-blur-md sm:items-center sm:p-4"
           onClick={onClose}
         >
           <motion.div
@@ -170,7 +193,7 @@ export function ProjectGalleryModal({ project, onClose }: ProjectGalleryModalPro
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 12 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="relative my-8 w-full max-w-6xl overflow-hidden rounded-[1.25rem] border border-white/10 bg-white shadow-[0_24px_80px_rgba(8,20,37,0.35)] sm:max-h-[92vh] sm:rounded-[1.5rem]"
+            className="relative min-h-dvh w-full max-w-6xl overflow-y-auto bg-white shadow-[0_24px_80px_rgba(8,20,37,0.35)] sm:my-8 sm:min-h-0 sm:max-h-[92vh] sm:overflow-hidden sm:rounded-[1.5rem] sm:border sm:border-white/10"
             onClick={(event) => event.stopPropagation()}
           >
             <button
@@ -183,7 +206,7 @@ export function ProjectGalleryModal({ project, onClose }: ProjectGalleryModalPro
             </button>
 
             <div className="grid lg:grid-cols-[1.35fr_0.65fr]">
-              <div className="relative min-h-[340px] overflow-hidden bg-[#07111f] sm:min-h-[520px] lg:min-h-[680px]">
+              <div className="relative min-h-[300px] overflow-hidden bg-[#07111f] sm:min-h-[520px] lg:min-h-[680px]">
                 {currentMedia ? (
                   <motion.div
                     key={currentMedia.key}
@@ -253,7 +276,7 @@ export function ProjectGalleryModal({ project, onClose }: ProjectGalleryModalPro
                 ) : null}
               </div>
 
-              <aside className="flex max-h-[92vh] flex-col overflow-y-auto p-6 sm:p-8">
+              <aside className="flex flex-col overflow-y-auto p-5 pb-8 sm:max-h-[92vh] sm:p-8">
                 <div className={`-mx-2 -mt-2 rounded-[1.25rem] bg-gradient-to-br ${paletteClass} p-5 text-white`}>
                 <p className="text-sm font-semibold uppercase tracking-[0.22em] text-white/80">
                   {project.category}
@@ -270,11 +293,11 @@ export function ProjectGalleryModal({ project, onClose }: ProjectGalleryModalPro
                 </p>
 
                 {project.result ? (
-                  <div className="mt-6 rounded-[1.25rem] bg-muted p-5">
-                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-secondary">
+                  <div className={`mt-6 rounded-[1.25rem] p-5 ${paletteSoftClass}`}>
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] opacity-80">
                       Outcome
                     </p>
-                    <p className="mt-3 text-sm leading-7 text-foreground">{project.result}</p>
+                    <p className="mt-3 text-sm font-medium leading-7">{project.result}</p>
                   </div>
                 ) : null}
 

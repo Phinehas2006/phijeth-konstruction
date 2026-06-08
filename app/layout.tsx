@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Analytics } from '@vercel/analytics/next'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
+import { SitePreloader } from '@/components/site-preloader'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -21,6 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-sans antialiased flex flex-col min-h-screen">
+        <SitePreloader />
         <Header />
         <main className="flex-1">
           {children}
